@@ -14,13 +14,11 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "PCL_ROOT": "D:/SDK/PCL-1.15.0",
-        "BOOST_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
-        "Boost_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
-        "QHULL_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Qhull",
-        "FLANN_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Flann",
-        "OPENNI2_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/OpenNI2",
-        "OpenCV_DIR": "D:/SDK/opencv/build"
+        "Qt6_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6",
+        "Qt6Widgets_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6Widgets",
+        "Qt6GuiTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6GuiTools",
+        "Qt6CoreTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6CoreTools",
+        "CMAKE_PREFIX_PATH": "E:/DevTools/vcpkg/installed/x64-windows"
       },
       "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
     },
@@ -32,13 +30,11 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "PCL_ROOT": "D:/SDK/PCL-1.15.0",
-        "BOOST_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
-        "Boost_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
-        "QHULL_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Qhull",
-        "FLANN_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Flann",
-        "OPENNI2_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/OpenNI2",
-        "OpenCV_DIR": "D:/SDK/opencv/build"
+        "Qt6_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6",
+        "Qt6Widgets_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6Widgets",
+        "Qt6GuiTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6GuiTools",
+        "Qt6CoreTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6CoreTools",
+        "CMAKE_PREFIX_PATH": "E:/DevTools/vcpkg/installed/x64-windows"
       },
       "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
     }

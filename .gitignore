@@ -3,3 +3,4 @@
 .vscode
 CMakeUserPresets.json
 CMakeLists.txt.user
+/.vs
