@@ -19,6 +19,9 @@ add_definitions(${PCL_DEFINITIONS})
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
+find_package(VTK REQUIRED)
+include_directories(${VTK_INCLUDE_DIRS})
+
 file(GLOB_RECURSE PROJECT_SOURCES 
     src/*.cpp
     src/*.h
@@ -30,4 +33,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Widgets
     ${PCL_LIBRARIES}
     ${OpenCV_LIBS}
+    ${VTK_LIBRARIES}
 )

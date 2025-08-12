@@ -8,4 +8,4 @@ set(CMAKE_SYSROOT "E:/Windows Kits/10")
 
 set(CMAKE_TOOLCHAIN_FILE "E:/DevTools/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
-set(Qt6_DIR "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6" CACHE PATH "Path to Qt6 CMake files")
+set(Qt6_DIR "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6" CACHE PATH "Path to Qt6 CMake files")

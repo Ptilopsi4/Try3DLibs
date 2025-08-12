@@ -14,10 +14,10 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Qt6_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6",
-        "Qt6Widgets_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6Widgets",
-        "Qt6GuiTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6GuiTools",
-        "Qt6CoreTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6CoreTools",
+        "Qt6_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6",
+        "Qt6Widgets_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6Widgets",
+        "Qt6GuiTools_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6GuiTools",
+        "Qt6CoreTools_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6CoreTools",
         "CMAKE_PREFIX_PATH": "E:/DevTools/vcpkg/installed/x64-windows"
       },
       "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
@@ -30,10 +30,10 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "Qt6_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6",
-        "Qt6Widgets_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6Widgets",
-        "Qt6GuiTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6GuiTools",
-        "Qt6CoreTools_DIR": "E:/Qt/6.6.3/msvc2019_64/lib/cmake/Qt6CoreTools",
+        "Qt6_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6",
+        "Qt6Widgets_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6Widgets",
+        "Qt6GuiTools_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6GuiTools",
+        "Qt6CoreTools_DIR": "E:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6CoreTools",
         "CMAKE_PREFIX_PATH": "E:/DevTools/vcpkg/installed/x64-windows"
       },
       "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
