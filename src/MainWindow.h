@@ -19,6 +19,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void openFile();  
+    void handleFileChecked(const QString& filePath, bool checked);
+
 private:
     ElementListDock* elementListDock;
     FileListDock* fileListDock;
@@ -27,6 +31,8 @@ private:
     PropertyDisplayDock* propertyDisplayDock;
     OperationButtonDock* operationButtonDock;
 
+    void setupMenu();
+    void setupToolBar();
     void createDocks();
     void createCentralWidget();
 };

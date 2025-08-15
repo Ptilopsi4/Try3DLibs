@@ -3,7 +3,7 @@
 #define FILELISTDOCK_H
 
 #include <QDockWidget>
-#include <QListWidget>
+#include <QTableWidget>
 
 class FileListDock : public QDockWidget
 {
@@ -11,6 +11,13 @@ class FileListDock : public QDockWidget
 
 public:
     FileListDock(QWidget *parent = nullptr);
+    void addFile(const QString& filePath);
+
+signals:
+    void fileChecked(const QString& filePath, bool checked);
+
+private:
+    QTableWidget* tableWidget;
 };
 
 #endif // FILELISTDOCK_H

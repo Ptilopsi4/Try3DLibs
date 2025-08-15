@@ -1,6 +1,8 @@
 // src/main.cpp
 #include <QApplication>
 #include "mainwindow.h"
+#include <QVTKOpenGLNativeWidget.h>
+#include <QPointer>
 
 int main(int argc, char *argv[])
 {

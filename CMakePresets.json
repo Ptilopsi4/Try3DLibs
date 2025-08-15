@@ -37,6 +37,42 @@
         "CMAKE_PREFIX_PATH": "E:/DevTools/vcpkg/installed/x64-windows"
       },
       "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
+    },
+    {
+      "name": "ninja-msvc-release",
+      "displayName": "Ninja with MSVC (Release)",
+      "description": "Configuration using Ninja and MSVC for Release build",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PCL_ROOT": "D:/SDK/PCL-1.15.0",
+        "BOOST_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
+        "Boost_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
+        "QHULL_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Qhull",
+        "FLANN_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Flann",
+        "OPENNI2_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/OpenNI2",
+        "OpenCV_DIR": "D:/SDK/opencv/build"
+      },
+      "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
+    },
+    {
+      "name": "vs-msvc-release",
+      "displayName": "Visual Studio with MSVC (Release)",
+      "description": "Configuration using Visual Studio and MSVC for Release build",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PCL_ROOT": "D:/SDK/PCL-1.15.0",
+        "BOOST_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
+        "Boost_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Boost",
+        "QHULL_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Qhull",
+        "FLANN_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/Flann",
+        "OPENNI2_ROOT": "D:/SDK/PCL-1.15.0/3rdParty/OpenNI2",
+        "OpenCV_DIR": "D:/SDK/opencv/build"
+      },
+      "toolchainFile": "${sourceDir}/toolchain-msvc.cmake"
     }
   ],
   "buildPresets": [
@@ -49,6 +85,16 @@
       "name": "vs-msvc-build",
       "displayName": "Visual Studio Build",
       "configurePreset": "vs-msvc"
+    },
+    {
+      "name": "ninja-msvc-release-build",
+      "displayName": "Ninja Release Build",
+      "configurePreset": "ninja-msvc-release"
+    },
+    {
+      "name": "vs-msvc-release-build",
+      "displayName": "Visual Studio Release Build",
+      "configurePreset": "vs-msvc-release"
     }
   ]
 }

@@ -11,7 +11,21 @@
 #include <vtkSphereSource.h>
 #include <vtkConeSource.h>
 
-VTKDisplayWidget::VTKDisplayWidget(QWidget *parent)
+#include <QHBoxLayout>
+#include <QVTKOpenGLNativeWidget.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkCamera.h>
+
+#include <vtkConeSource.h>
+
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/visualization/pcl_visualizer.h>
+
+VTKDisplayWidget::VTKDisplayWidget(QWidget* parent)
     : QWidget(parent)
 {
     // 创建 QVTKOpenGLNativeWidget
