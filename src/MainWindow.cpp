@@ -42,6 +42,7 @@ void MainWindow::createCentralWidget()
 {
     // 创建ImageDisplayWidget和VTKDisplayWidget
     imageDisplayWidget = new ImageDisplayWidget(this);
+    imageDisplayWidget->loadPointCloud("C:/Users/14054/Downloads/wires_boxes/frame_00073.pcd");
     vtkDisplayWidget = new VTKDisplayWidget(this);
 
     QSplitter* centralSplitter = new QSplitter(Qt::Horizontal, this);

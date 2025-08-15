@@ -12,8 +12,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-find_package(PCL 1.15 REQUIRED COMPONENTS common io filters visualization)
+find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 find_package(OpenCV REQUIRED)
