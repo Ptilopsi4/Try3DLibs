@@ -87,18 +87,50 @@ void ImageDisplayWidget::initializeVTK()
     vtkWidget->renderWindow()->GetInteractor()->SetInteractorStyle(style);
 }
 
-bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
+bool ImageDisplayWidget::loadPointCloud(const QString& filePath, bool clearExisting)
+{
+    QFileInfo fileInfo(filePath);
+    
+    // 如果已经加载过这个点云，就不重复加载
+    if (pointCloudActors.contains(filePath)) {
+        return true;
+    }
+    
+    // 切换到点云模式
+    if (currentMode != 2) {
+        imageLabel->hide();
+        vtkWidget->show();
+        currentMode = 2;
+    }
+    
+    // 如果需要清除现有点云，则调用clearPointCloudScene
+    if (clearExisting) {
+        clearPointCloudScene();
+    }
+    
+    // 创建点云Actor
+    vtkSmartPointer<vtkActor> actor = createPointCloudActor(filePath);
+    if (!actor) {
+        return false; // 创建失败
+    }
+    
+    // 存储Actor以便后续管理
+    pointCloudActors[filePath] = actor;
+    
+    // 添加到渲染器
+    renderer->AddActor(actor);
+    
+    // 重置相机位置以适应点云
+    renderer->ResetCamera();
+    vtkWidget->renderWindow()->Render();
+    
+    return true;
+}
+
+vtkSmartPointer<vtkActor> ImageDisplayWidget::createPointCloudActor(const QString& filePath)
 {
     QFileInfo fileInfo(filePath);
     std::string stdFilePath = filePath.toStdString();
-    
-    // 清除当前点云场景
-    clearPointCloudScene();
-    
-    // 切换到点云模式
-    imageLabel->hide();
-    vtkWidget->show();
-    currentMode = 2;
     
     // 根据文件扩展名选择合适的加载方法
     if (fileInfo.suffix().toLower() == "pcd") {
@@ -110,7 +142,7 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloudXYZ(new pcl::PointCloud<pcl::PointXYZ>);
             if (pcl::io::loadPCDFile<pcl::PointXYZ>(stdFilePath, *cloudXYZ) == -1) {
                 QMessageBox::warning(this, "加载错误", "无法加载PCD文件: " + filePath);
-                return false;
+                return nullptr;
             }
             
             // 转换为VTK数据
@@ -143,8 +175,7 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             actor->GetProperty()->SetPointSize(2);
             actor->GetProperty()->SetColor(1.0, 1.0, 1.0); // 白色点
             
-            // 添加到渲染器
-            renderer->AddActor(actor);
+            return actor;
         }
         else {
             // 点云有颜色信息，创建VTK数据
@@ -186,8 +217,7 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             actor->SetMapper(mapper);
             actor->GetProperty()->SetPointSize(2);
             
-            // 添加到渲染器
-            renderer->AddActor(actor);
+            return actor;
         }
     }
     else if (fileInfo.suffix().toLower() == "ply") {
@@ -199,7 +229,7 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloudXYZ(new pcl::PointCloud<pcl::PointXYZ>);
             if (pcl::io::loadPLYFile<pcl::PointXYZ>(stdFilePath, *cloudXYZ) == -1) {
                 QMessageBox::warning(this, "加载错误", "无法加载PLY文件: " + filePath);
-                return false;
+                return nullptr;
             }
             
             // 转换为VTK数据（与PCD处理类似)
@@ -232,8 +262,7 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             actor->GetProperty()->SetPointSize(2);
             actor->GetProperty()->SetColor(1.0, 1.0, 1.0); // 白色点
             
-            // 添加到渲染器
-            renderer->AddActor(actor);
+            return actor;
         }
         else {
             // 处理有颜色的PLY点云（与PCD处理类似)
@@ -275,20 +304,13 @@ bool ImageDisplayWidget::loadPointCloud(const QString& filePath)
             actor->SetMapper(mapper);
             actor->GetProperty()->SetPointSize(2);
             
-            // 添加到渲染器
-            renderer->AddActor(actor);
+            return actor;
         }
     }
     else {
         QMessageBox::warning(this, "格式错误", "不支持的点云文件格式: " + fileInfo.suffix());
-        return false;
+        return nullptr;
     }
-    
-    // 重置相机位置以适应点云
-    renderer->ResetCamera();
-    vtkWidget->renderWindow()->Render();
-    
-    return true;
 }
 
 bool ImageDisplayWidget::loadImage(const QString& filePath)
@@ -313,22 +335,80 @@ bool ImageDisplayWidget::loadImage(const QString& filePath)
 
 void ImageDisplayWidget::clearPointCloudScene()
 {
-    // 保留坐标轴，移除所有其他演员
-    vtkActorCollection* actors = renderer->GetActors();
-    actors->InitTraversal();
+    // 清除所有点云Actor
+    for (auto it = pointCloudActors.begin(); it != pointCloudActors.end(); ++it) {
+        renderer->RemoveActor(it.value());
+    }
+    pointCloudActors.clear();
     
-    // 首先收集要移除的演员（避免在遍历过程中修改集合)
-    std::vector<vtkActor*> actorsToRemove;
-    for (int i = 0; i < actors->GetNumberOfItems(); i++) {
-        vtkActor* actor = actors->GetNextActor();
-        // 跳过坐标轴（假设坐标轴是第一个添加的演员）
-        if (i > 0) {  
-            actorsToRemove.push_back(actor);
+    vtkWidget->renderWindow()->Render();
+}
+
+bool ImageDisplayWidget::removePointCloud(const QString& filePath)
+{
+    // 如果点云已加载，则移除它
+    if (pointCloudActors.contains(filePath)) {
+        renderer->RemoveActor(pointCloudActors[filePath]);
+        pointCloudActors.remove(filePath);
+        vtkWidget->renderWindow()->Render();
+        return true;
+    }
+    return false;
+}
+
+void ImageDisplayWidget::clearDisplay()
+{
+    // 清除点云场景
+    clearPointCloudScene();
+    
+    // 清除图像
+    imageLabel->clear();
+    imageLabel->setText("图像和点云显示区域");
+    
+    // 根据当前模式切换显示
+    if (currentMode == 2) { // 当前是点云模式
+        vtkWidget->hide();
+        imageLabel->show();
+    }
+    
+    // 重置模式
+    currentMode = 0;
+    
+    // 更新VTK渲染窗口
+    if (vtkWidget->isVisible()) {
+        vtkWidget->renderWindow()->Render();
+    }
+}
+
+bool ImageDisplayWidget::loadMultiplePointClouds(const QSet<QString>& filePaths)
+{
+    // 首先清除所有现有的点云
+    clearPointCloudScene();
+    
+    // 切换到点云模式
+    if (currentMode != 2) {
+        imageLabel->hide();
+        vtkWidget->show();
+        currentMode = 2;
+    }
+    
+    // 加载所有选中的点云文件
+    bool allSuccess = true;
+    for (const QString& filePath : filePaths) {
+        QFileInfo fileInfo(filePath);
+        QString suffix = fileInfo.suffix().toLower();
+        
+        if (suffix == "pcd" || suffix == "ply") {
+            bool success = loadPointCloud(filePath, false); // 不清除已有点云
+            if (!success) {
+                allSuccess = false;
+            }
         }
     }
     
-    // 移除收集到的演员
-    for (vtkActor* actor : actorsToRemove) {
-        renderer->RemoveActor(actor);
-    }
+    // 重置相机位置以适应点云
+    renderer->ResetCamera();
+    vtkWidget->renderWindow()->Render();
+    
+    return allSuccess;
 }

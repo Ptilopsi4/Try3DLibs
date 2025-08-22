@@ -12,6 +12,7 @@ class FileListDock : public QDockWidget
 public:
     FileListDock(QWidget *parent = nullptr);
     void addFile(const QString& filePath);
+    void selectFile(const QString& filePath, bool select);
 
 signals:
     void fileChecked(const QString& filePath, bool checked);

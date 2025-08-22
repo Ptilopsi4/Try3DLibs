@@ -10,11 +10,11 @@
 #include <QSplitter>
 #include <QMenuBar>
 #include <QToolBar>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    // 加载QSS文件
     QFile styleFile(":res/lightStyle.qss");
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
@@ -61,19 +61,15 @@ void MainWindow::setupToolBar()
 
 void MainWindow::createDocks()
 {
-    // 创建ElementListDock
     elementListDock = new ElementListDock(this);
     addDockWidget(Qt::LeftDockWidgetArea, elementListDock);
 
-    // 创建FileListDock
     fileListDock = new FileListDock(this);
     addDockWidget(Qt::LeftDockWidgetArea, fileListDock);
 
-    // 创建PropertyDisplayDock
     propertyDisplayDock = new PropertyDisplayDock(this);
     addDockWidget(Qt::BottomDockWidgetArea, propertyDisplayDock);
 
-    // 创建OperationButtonDock
     operationButtonDock = new OperationButtonDock(this);
     addDockWidget(Qt::BottomDockWidgetArea, operationButtonDock);
 
@@ -84,16 +80,13 @@ void MainWindow::createDocks()
 
 void MainWindow::createCentralWidget()
 {
-    // 创建ImageDisplayWidget和VTKDisplayWidget
     imageDisplayWidget = new ImageDisplayWidget(this);
-    imageDisplayWidget->loadPointCloud("C:/Users/14054/Downloads/wires_boxes/frame_00073.pcd");
     vtkDisplayWidget = new VTKDisplayWidget(this);
 
     QSplitter* centralSplitter = new QSplitter(Qt::Horizontal, this);
     centralSplitter->addWidget(imageDisplayWidget);
     centralSplitter->addWidget(vtkDisplayWidget);
 
-    // 设置初始大小
     centralSplitter->setSizes({500, 500});
 
     setCentralWidget(centralSplitter);
@@ -101,24 +94,108 @@ void MainWindow::createCentralWidget()
 
 void MainWindow::openFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(
+    QStringList filePaths = QFileDialog::getOpenFileNames(
         this,
         "Open Point Cloud",
         "",
-        "Point Cloud Files (*.pcd *.ply *.obj *.stl)"
+        "Point Cloud Files (*.pcd *.ply);;Image Files (*.jpg *.png)"
     );
     
-    if (!filePath.isEmpty()) {
-        // 添加到文件列表
-        fileListDock->addFile(filePath);
+    if (!filePaths.isEmpty()) {
+        // 添加所有选择的文件到文件列表
+        for (const QString& filePath : filePaths) {
+            fileListDock->addFile(filePath);
+        }
     }
 }
 
 void MainWindow::handleFileChecked(const QString& filePath, bool checked)
 {
+    QFileInfo fileInfo(filePath);
+    QString suffix = fileInfo.suffix().toLower();
+    
     if (checked) {
-        vtkDisplayWidget->displayPointCloud(filePath);
-    } else {
-        vtkDisplayWidget->removePointCloud(filePath);
+        // 添加到选中文件集合
+        checkedFiles.insert(filePath);
+        
+        // 只处理点云和图像文件
+        if (suffix == "pcd" || suffix == "ply") {
+            // 如果是点云文件，添加到现有显示中
+            imageDisplayWidget->loadPointCloud(filePath, false); // false表示不清除现有点云
+        }
+        else if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "bmp") {
+            // 如果是图像文件，直接显示
+            imageDisplayWidget->loadImage(filePath);
+        }
+        else {
+            qDebug() << "不支持的文件类型：" << suffix;
+        }
+    }
+    else {
+        // 从选中文件集合中移除
+        checkedFiles.remove(filePath);
+        
+        if (suffix == "pcd" || suffix == "ply") {
+            // 如果是点云文件，从显示中移除
+            imageDisplayWidget->removePointCloud(filePath);
+            
+            // 如果没有选中的点云文件了，清空显示
+            bool hasPointCloud = false;
+            for (const QString& checkedFile : checkedFiles) {
+                QFileInfo info(checkedFile);
+                if (info.suffix().toLower() == "pcd" || info.suffix().toLower() == "ply") {
+                    hasPointCloud = true;
+                    break;
+                }
+            }
+            
+            if (!hasPointCloud) {
+                imageDisplayWidget->clearDisplay();
+            }
+        }
+        else if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "bmp") {
+            // 如果是图像文件，需要更新显示
+            updateDisplayWithCheckedFiles();
+        }
+    }
+}
+
+void MainWindow::updateDisplayWithCheckedFiles()
+{
+    // 如果没有选中的文件，则清空显示
+    if (checkedFiles.isEmpty()) {
+        imageDisplayWidget->clearDisplay();
+        return;
+    }
+    
+    // 检查是否有点云文件
+    bool hasPointCloud = false;
+    QSet<QString> pointCloudFiles;
+    
+    for (const QString& filePath : checkedFiles) {
+        QFileInfo fileInfo(filePath);
+        QString suffix = fileInfo.suffix().toLower();
+        
+        if (suffix == "pcd" || suffix == "ply") {
+            hasPointCloud = true;
+            pointCloudFiles.insert(filePath);
+        }
+    }
+    
+    if (hasPointCloud) {
+        // 加载所有选中的点云文件
+        imageDisplayWidget->loadMultiplePointClouds(pointCloudFiles);
+    }
+    else {
+        // 没有点云文件，尝试加载图像文件
+        for (const QString& filePath : checkedFiles) {
+            QFileInfo fileInfo(filePath);
+            QString suffix = fileInfo.suffix().toLower();
+            
+            if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "bmp") {
+                imageDisplayWidget->loadImage(filePath);
+                break; // 只加载第一个图像文件
+            }
+        }
     }
 }

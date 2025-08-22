@@ -3,13 +3,17 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+#include <QSet>
+#include <QString>
+#include <QFileInfo>
 
 class ElementListDock;
 class FileListDock;
-class ImageDisplayWidget;
-class VTKDisplayWidget;
 class PropertyDisplayDock;
 class OperationButtonDock;
+class ImageDisplayWidget;
+class VTKDisplayWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -20,7 +24,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void openFile();  
+    void openFile();
     void handleFileChecked(const QString& filePath, bool checked);
 
 private:
@@ -30,11 +34,14 @@ private:
     VTKDisplayWidget* vtkDisplayWidget;
     PropertyDisplayDock* propertyDisplayDock;
     OperationButtonDock* operationButtonDock;
+    QSet<QString> checkedFiles;
+    QString currentDisplayedFile;
 
     void setupMenu();
     void setupToolBar();
     void createDocks();
     void createCentralWidget();
+    void updateDisplayWithCheckedFiles();
 };
 
 #endif // MAINWINDOW_H

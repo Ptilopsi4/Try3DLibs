@@ -15,7 +15,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     OpenGLWidgets
 )
 
-find_package(VTK 9.5 REQUIRED COMPONENTS 
+find_package(VTK 9.3 REQUIRED COMPONENTS 
     CommonCore
     CommonDataModel
     FiltersCore
@@ -26,18 +26,15 @@ find_package(VTK 9.5 REQUIRED COMPONENTS
     InteractionStyle
     RenderingFreeType
     CommonExecutionModel
+    RenderingAnnotation
 )
 
-find_package(PCL REQUIRED)
+find_package(PCL 1.15 REQUIRED COMPONENTS common io filters visualization)
 include_directories(${PCL_INCLUDE_DIRS})
-link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-
-find_package(VTK REQUIRED)
-include_directories(${VTK_INCLUDE_DIRS})
 
 file(GLOB_RECURSE PROJECT_SOURCES 
     src/*.cpp
