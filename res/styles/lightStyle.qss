@@ -207,3 +207,69 @@ QSlider::handle:horizontal {
 QSlider::handle:horizontal:hover {
     border-color: #a5abb5;
 }
+
+/* 下拉菜单 (QComboBox) - 灰色调 */
+QComboBox {
+    background-color: #f5f6f8;
+    border: 1px solid #d5d9de;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: #3a3f46;
+}
+
+QComboBox:hover {
+    background-color: #eaecef;
+    border-color: #c8ccd3;
+}
+
+QComboBox:pressed {
+    background-color: #dde0e5;
+    border-color: #a5abb5;
+}
+
+QComboBox::drop-down {
+    border: none;
+    background-color: transparent;
+}
+
+QComboBox::down-arrow {
+    width: 14px;
+    height: 14px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    border: 1px solid #d5d9de;
+    border-radius: 4px;
+}
+
+/* 复选框 - 统一样式 */
+QCheckBox::indicator {
+    border: 1px solid #d5d9de;
+    background: #f5f6f8;
+    width: 10px;
+    height: 0px;
+}
+
+QCheckBox::indicator:checked {
+    background: #0078d7;
+}
+
+QCheckBox::indicator:unchecked {
+    background: #ffffff;
+}
+
+QTreeWidget::indicator {
+    border: 1px solid #d5d9de;
+    background: #f5f6f8;
+    width: 10px;
+    height: 10px;
+}
+
+QTreeWidget::indicator:checked {
+    background: #0078d7;
+}
+
+QTreeWidget::indicator:unchecked {
+    background: #ffffff;
+}

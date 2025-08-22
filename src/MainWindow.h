@@ -26,6 +26,7 @@ public:
 private slots:
     void openFile();
     void handleFileChecked(const QString& filePath, bool checked);
+    void handleElementChecked(int index, bool checked);
 
 private:
     ElementListDock* elementListDock;

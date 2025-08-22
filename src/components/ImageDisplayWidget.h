@@ -1,59 +1,63 @@
-// src/components/ImageDisplayWidget.h
 #ifndef IMAGEDISPLAYWIDGET_H
 #define IMAGEDISPLAYWIDGET_H
 
 #include <QWidget>
 #include <QLabel>
-#include <QMap>
-#include <vtkSmartPointer.h>
-#include <vtkRenderer.h>
-#include <vtkActor.h>
-#include <QString>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QFileDialog>
+#include <QImage>
+#include <QPixmap>
+#include <QScrollArea>
+#include <QSlider>
+#include <opencv2/opencv.hpp>
+#include <QComboBox> // 添加下拉菜单
 
-class QVTKOpenGLNativeWidget;
+#include "ElementListDock.h"
 
 class ImageDisplayWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    ImageDisplayWidget(QWidget *parent = nullptr);
-    ~ImageDisplayWidget();
+    ImageDisplayWidget(QWidget *parent = nullptr, ElementListDock* elementListDock = nullptr);
 
-    // 加载并显示点云文件
-    bool loadPointCloud(const QString& filePath, bool clearExisting = true);
-    
-    // 加载并显示图像
-    bool loadImage(const QString& filePath);
-    
-    // 清除当前显示内容并重置显示状态
-    void clearDisplay();
-    
-    // 移除特定的点云文件
-    bool removePointCloud(const QString& filePath);
+    void loadAndDisplayImage(const QString &filePath);
+    void convertToGrayscale();
+    void detectShapes();
+    void detectCircles();
 
-    // 加载多个点云文件
-    bool loadMultiplePointClouds(const QSet<QString>& filePaths);
+signals:
+    void circleDetected(double centerX, double centerY, double radius);
+
+private slots:
+    void zoomIn();
+    void zoomOut();
+    void onZoomSliderValueChanged(int value);
 
 private:
-    QLabel* imageLabel;
-    QVTKOpenGLNativeWidget* vtkWidget;
-    vtkSmartPointer<vtkRenderer> renderer;
-    
-    // 文件路径到Actor的映射，用于管理多个点云
-    QMap<QString, vtkSmartPointer<vtkActor>> pointCloudActors;
-    
-    // 初始化VTK环境
-    void initializeVTK();
-    
-    // 清除当前点云场景
-    void clearPointCloudScene();
-    
-    // 创建点云的Actor
-    vtkSmartPointer<vtkActor> createPointCloudActor(const QString& filePath);
-    
-    // 当前模式：0=未显示，1=图像模式，2=点云模式
-    int currentMode;
+    QScrollArea *scrollArea;
+    QLabel *imageLabel;
+    QPushButton *loadButton;
+    QPushButton *grayscaleButton;
+    QPushButton *zoomInButton;
+    QPushButton *zoomOutButton;
+    QPushButton *detectShapesButton;
+    QPushButton *detectCirclesButton;
+    QSlider *zoomSlider;
+
+    cv::Mat originalImage;
+    cv::Mat grayscaleImage;
+    QPixmap currentPixmap;
+
+    double zoomFactor;
+    double minZoomFactor;
+    double maxZoomFactor;
+
+    void setupUI();
+    void displayPixmap();
+
+    ElementListDock* elementListDock;
 };
 
 #endif // IMAGEDISPLAYWIDGET_H

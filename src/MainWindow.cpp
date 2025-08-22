@@ -10,12 +10,16 @@
 #include <QSplitter>
 #include <QMenuBar>
 #include <QToolBar>
-#include <QFileDialog>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    QFile styleFile(":res/lightStyle.qss");
+    //设置窗口图标
+    QIcon icon(":res/icons/app_icon.png");
+    setWindowIcon(icon);
+    // 加载QSS文件
+    QFile styleFile(":res/styles/lightStyle.qss");
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
     setStyleSheet(styleSheet);
@@ -76,11 +80,13 @@ void MainWindow::createDocks()
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
     connect(fileListDock, &FileListDock::fileChecked, this, &MainWindow::handleFileChecked);
+    connect(elementListDock, &ElementListDock::elementChecked, this, &MainWindow::handleElementChecked);
 }
 
 void MainWindow::createCentralWidget()
 {
-    imageDisplayWidget = new ImageDisplayWidget(this);
+    // 创建ImageDisplayWidget和VTKDisplayWidget
+    imageDisplayWidget = new ImageDisplayWidget(this, elementListDock);
     vtkDisplayWidget = new VTKDisplayWidget(this);
 
     QSplitter* centralSplitter = new QSplitter(Qt::Horizontal, this);
@@ -196,6 +202,27 @@ void MainWindow::updateDisplayWithCheckedFiles()
                 imageDisplayWidget->loadImage(filePath);
                 break; // 只加载第一个图像文件
             }
+        }
+    }
+}
+
+void MainWindow::handleElementChecked(int index, bool checked)
+{
+    QTreeWidgetItem* item = elementListDock->getTreeWidget()->topLevelItem(index);
+    if (item) {
+        QString elementName = item->text(0);
+        if (checked) {
+            // 解析圆形参数
+            QRegularExpression re(R"(Circle \d+: Center \((\d+), (\d+)\), Radius (\d+))");
+            QRegularExpressionMatch match = re.match(elementName);
+            if (match.hasMatch()) {
+                double centerX = match.captured(1).toDouble();
+                double centerY = match.captured(2).toDouble();
+                double radius = match.captured(3).toDouble();
+                vtkDisplayWidget->displayCircle(centerX, centerY, radius);
+            }
+        } else {
+            vtkDisplayWidget->removeCircle(elementName);
         }
     }
 }
